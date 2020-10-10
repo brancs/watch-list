@@ -471,6 +471,8 @@ function importAnimeFile() {
 
     reader.readAsText(file);
 
+    showContent('#home');
+
 }
 
 //Get archive from Google Drive
