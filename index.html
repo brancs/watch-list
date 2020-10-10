@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch List</title>
+
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- My CSS -->
+    <link rel="stylesheet" href="/css/global-main.css">
+</head>
+<body>
+   
+    <section id="header" class="menu">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="#"><span class="material-icons" style="font-size: 16px;">view_list</span> My Watch List</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li id="nav-home" class="nav-item active">
+                        <a class="nav-link" href="javascript:void(0)" onclick="showContent('#home')">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li id="nav-add" class="nav-item">
+                        <a class="nav-link" href="javascript:void(0)" onclick="showContent('#addNewAnime')">Add to List</a>
+                    </li>
+                    <li id="nav-import" class="nav-item">
+                        <a class="nav-link" href="javascript:void(0)" onclick="showContent('#importExportList')">Import/Export List Backup</a>
+                    </li>
+                </ul>
+            </div>
+          </nav>
+    </section>
+
+    <section id="home" class="content">
+        <div class="container-fluid">
+            <div class="row mt-5 mb-5">
+                <div class="col-12">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <h2><span class="material-icons">view_list</span> My List</h2>
+                            </div>
+                            <div class="col-12 mb-1">
+                                <div class="form-check form-check-inline mb-3">
+                                    <input class="form-check-input" onchange="searchInList('all')" name="filter" type="radio" id="allAnimes" checked>
+                                    <label class="form-check-label click-able" for="allAnimes"> All </label>
+                                </div>
+                                <div class="form-check form-check-inline mb-3">
+                                    <input class="form-check-input" onchange="searchInList('watched')" name="filter" type="radio" id="watchedAnimes">
+                                    <label class="form-check-label click-able" for="watchedAnimes"> Watched </label>
+                                </div>
+                                <div class="form-check form-check-inline mb-3">
+                                    <input class="form-check-input" onchange="searchInList('watching')" name="filter" type="radio" id="watchingAnimes">
+                                    <label class="form-check-label click-able" for="watchingAnimes"> Watching </label>
+                                </div>
+                            </div>
+                            <div class="col-12 mb-3">
+                                <div class="input-group mb-3">
+                                    <input id="searchAnimeName" type="text" class="form-control form-control-lg" onkeyup="searchInList('name')" placeholder="Enter the name" aria-label="Enter the name" aria-describedby="Enter-the-name">
+                                    <div class="input-group-append">
+                                      <button id="btn-search" type="button" onclick="searchInList('name')" class="btn btn-primary" type="button" id="button-addon2"><span class="material-icons search">search</span></button>
+                                      <button id="btn-clear-search" type="button" onclick="clearSearch()" class="btn btn-outline-danger" type="button" id="button-addon2"><span class="material-icons search">clear</span></button>
+                                    </div>
+                                </div>
+                            <!--
+                                <form class="form-inline mb-3">
+                                    <input id="searchAnimeName" type="text" onkeyup="searchInList()" class="form-control form-control-lg">
+                                    <button id="btn-search" type="button" onclick="searchInList()" class="btn btn-primary"><span class="material-icons search">search</span></button>
+                                    <button id="btn-clear-search" type="button" onclick="clearSearch()" class="btn btn-primary"><span class="material-icons search">clear</span></button>
+                                </form>
+                            -->
+                            </div>
+
+                            <!-- Start home -->
+
+                            <div class="col-12">
+                                <div id="myAnimes" class="row">
+                                </div>
+                            </div>
+                            
+                            <div id="animeSpinner" class="col-12 text-center d-none">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
+                            </div>
+                            <!--
+                            <div class="col-6">
+                                
+                                <div id="animesdata">
+                                    Total animes/series/videos to Watch: <span id="totalAnimesToWatch"></span>
+                                    <br>
+                                    Total animes/series/videos I'm Watching: <span id="totalAnimesImWatching"></span>
+                                    <br>
+                                    Total animes/series/videos I've Watched: <span id="totalAnimesIveWatched"></span>
+                                    <br>
+                                    Total episodes I've Watched: <span id="totalEpisodesIveWatched"></span>
+                                </div>
+                               
+                            </div>
+                            -->
+                            <!-- End home -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="addNewAnime" class="content">
+        <div class="container-fluid">
+            <div class="row mt-5 mb-5">
+                <div class="col-12">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12 mb-3">    
+                                <h2><span class="material-icons">playlist_add</span> Add to your watch list</h2>
+                            </div>
+
+                            <!-- Start add anime -->
+                            <div class="col-12 col-md-5 col-lg-3">
+                                <form id="addNewAnime">
+                                    <div class="form-group">
+                                        <label for="newAnimeName"><p class="m-0"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">font_download</span> Name</p></label>
+                                        <input type="text" class="form-control" id="newAnimeName">
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="newAnimeUrl"><p class="m-0"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">launch</span> Url</p></label>
+                                        <input type="text" class="form-control" id="newAnimeUrl">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newAnimeIMG"><p class="m-0"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">insert_photo</span> Image Url</p></label>
+                                        <input type="text" class="form-control" id="newAnimeIMG">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newAnimeTotalNumOfEps"><p class="m-0"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">play_circle_filled</span> Total episodes</p></label>
+                                        <input type="number" class="form-control" id="newAnimeTotalNumOfEps" value="24">
+                                    </div>
+                                    <div class="form-group form-check">
+                                        <input type="radio" onchange="validationAddNewAnimeRadios()" class="form-check-input" style="position: relative;" name="newAnimeWatch" id="newAnimeWatching" value="watching" checked>
+                                        <label class="form-check-label click-able" for="newAnimeWatching"><p class="m-0"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">visibility</span> Watching</p></label>
+                                    </div>
+                                    <div class="form-group form-check">
+                                        <input type="radio" onchange="validationAddNewAnimeRadios()" class="form-check-input" style="position: relative;" name="newAnimeWatch" value="watched" id="newAnimeAlreadyWatched">
+                                        <label class="form-check-label click-able" for="newAnimeAlreadyWatched"><p class="m-0"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">visibility_off</span> Watched</p></label>
+                                    </div>
+                                    <div id="newAnimeActualEpGroup" class="form-group">
+                                        <label for="newAnimeActualEp">Actual Episode</label>
+                                        <input type="number" class="form-control" id="newAnimeActualEp" value="1">
+                                    </div>
+                                    <button type="button" onclick="addNewAnime()" class="btn btn-primary">Add to List</button>
+                                </form>
+                            </div>
+                            <!-- End add anime -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="importExportList" class="content">
+        <div class="container-fluid">
+            <div class="row mt-5 mb-5">
+                <div class="col-12">
+                    <div class="container-fluid">
+                        <div class="row">
+
+                            <div class="col-12 mb-3">    
+                                <h2><span class="material-icons">attach_file</span> Import and Export Backup List</h2>
+                            </div>
+
+                            <!-- Start Export anime -->
+                            <div class="col-12 mb-3">
+                                <h4>Export List</h4>
+                                <a class="btn btn-primary" onclick="exportAnimeFile()" href="javascript:void(0)">Export Watch List</a>
+                            </div>
+                            <!-- End Export anime -->
+
+                            <!-- Start Import anime -->
+                            <div class="col-12">
+                                <h4>Import List</h4>
+                                <div class="form-group">
+                                    <input type="file" class="form-control-file" id="importJsonFile">
+                                </div>
+                                <button class="btn btn-primary" onclick="importAnimeFile()">Import Watch List</button>
+                            </div>
+                            <!-- End Import anime -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <!-- My JS -->
+    <script src="/js/global-script.js"></script>
+</body>
+</html>
