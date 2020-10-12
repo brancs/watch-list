@@ -116,8 +116,9 @@ function editAnime(animeID) {
     let inputEpId= '#newEpValueTo-'+ animeID;
 
     //let novoEp = $(inputEpId).val();
-
-    myAnimes.animes[animeIndex].actualEp = $(inputEpId).val();
+    if($(inputEpId).val()){
+        myAnimes.animes[animeIndex].actualEp = $(inputEpId).val();
+    }
 
     if(myAnimes.animes[animeIndex].actualEp == myAnimes.animes[animeIndex].totalNumEps){
         myAnimes.animes[animeIndex].watched = true;
