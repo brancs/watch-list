@@ -106,8 +106,8 @@ function validationAddNewAnimeRadios(){
     }
 }
 
-//Edit anime
-function editAnime(animeID) {
+//Save actual ep anime
+function saveAnimeEp(animeID) {
 
     //myAnimes.animes.push(anime);
 
@@ -130,20 +130,84 @@ function editAnime(animeID) {
     showMyAnimes(myAnimes);
 }
 
+//Edit anime
+function openEditModal(animeID){
+
+    let animeIndex = myAnimes.animes.findIndex((obj => obj.id == animeID));
+
+    $('#editAnimeModalLabel').html("Editing " + myAnimes.animes[animeIndex].name);
+
+    $('#inputEditAnimeName').val(myAnimes.animes[animeIndex].name);
+    $('#inputEditAnimeImgUrl').val(myAnimes.animes[animeIndex].imgUrl);
+    $('#inputEditAnimeUrl').val(myAnimes.animes[animeIndex].url);
+    $('#inputEditAnimeTotalNumEps').val(myAnimes.animes[animeIndex].totalNumEps);
+    $('#inputEditAnimeActualEp').val(myAnimes.animes[animeIndex].actualEp);
+
+    $('#editAnimeModal-footer').html(`<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button><button type="button" onclick="editAnime('` + animeIndex + `')" class="btn btn-primary">Save changes</button>`);
+
+    $('#editAnimeModal').modal('show');
+}
+
+//Edit anime
+function editAnime(animeIndex){
+
+    console.log('Actual Total Eps: ' + myAnimes.animes[animeIndex].totalNumEps);
+    console.log('New Actual Total Eps: ' + $("#inputEditAnimeTotalNumEps").val());
+
+    if($(inputEditAnimeName).val()){
+        myAnimes.animes[animeIndex].name = $("#inputEditAnimeName").val();
+    }
+
+    if($(inputEditAnimeName).val()){
+        myAnimes.animes[animeIndex].imgUrl = $("#inputEditAnimeImgUrl").val();
+    }
+
+    if($(inputEditAnimeUrl).val()){
+        myAnimes.animes[animeIndex].url = $("#inputEditAnimeUrl").val();
+    }
+
+    if($(inputEditAnimeTotalNumEps).val()){
+        myAnimes.animes[animeIndex].totalNumEps = $("#inputEditAnimeTotalNumEps").val();
+    }
+
+    if($(inputEditAnimeActualEp).val()){
+        myAnimes.animes[animeIndex].actualEp = $("#inputEditAnimeActualEp").val();
+    }
+    
+
+    console.log('Anime ' + animeIndex + ' edited! ');
+
+    savingAnimeFile();
+    showMyAnimes(myAnimes);
+
+    $('#editAnimeModal').modal('hide');
+}
+
+function openRemoveModal(animeID, indexCounter){
+
+    let animeIndex = myAnimes.animes.findIndex((obj => obj.id == animeID));
+
+    $('#removeAnimeModalLabel').html("Removing " + myAnimes.animes[animeIndex].name);
+
+    $('#removeAnimeModal-footer').html(`<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button><button type="button" onclick="removeAnime('` + indexCounter + `')" class="btn btn-primary">Remove</button>`);
+
+    $('#removeAnimeModal').modal('show');
+}
 
 //Remove anime
-function removeAnime(animeID) {
+function removeAnime(indexCounter) {
 
     //myAnimes.animes.push(anime);
 
-    console.log('Anime ' + animeID + ' removed!');
+    console.log('Anime ' + indexCounter + ' removed!');
 
-    if (animeID !== undefined) myAnimes.animes.splice(animeID, 1);
+    if (indexCounter !== undefined) myAnimes.animes.splice(indexCounter, 1);
 
     //console.log("After removal:", myAnimes.animes);
 
     savingAnimeFile();
     showMyAnimes(myAnimes);
+    $('#removeAnimeModal').modal('hide');
 }
 //------------------------------------------- ADD, REMOVE AND EDIT LIST DATA END --------------------------------------------
 
@@ -379,9 +443,9 @@ function makeAnimeCard(anime, indexCounter){
     }
 
     if (anime.watched) {
-        AnimeCardHtml += `<br>Watched!<br><br><button class="btn btn-danger" onclick="removeAnime(` + indexCounter + `)"><span class="material-icons" style="font-size: 18px;">delete</span></button></div> </div> </div> </div></div>`;
+        AnimeCardHtml += `<br>Watched!<br><br><button class="btn btn-danger" onclick="openRemoveModal('`+ anime.id +`',` + indexCounter + `)"><span class="material-icons" style="font-size: 18px;">delete</span></button></div> </div> </div> </div></div>`;
     }else{
-        AnimeCardHtml += `<br><br><a class="btn btn-info" href='`+ anime.url +`' target='_blank'><span class="material-icons" style="font-size: 18px;">launch</span></a>&nbsp;&nbsp;<button class="btn btn-primary" onclick="editAnime('` + anime.id + `')"><span class="material-icons" style="font-size: 18px;">save</span></button>&nbsp;&nbsp;<button class="btn btn-danger" onclick="removeAnime(` + indexCounter + `)"><span class="material-icons" style="font-size: 18px;">delete</span></button></div> </div> </div> </div></div>`;
+        AnimeCardHtml += `<br><br><a class="btn btn-info" href='`+ anime.url +`' target='_blank'><span class="material-icons" style="font-size: 18px;">launch</span></a>&nbsp;&nbsp;<button class="btn btn-primary" onclick="saveAnimeEp('` + anime.id + `')"><span class="material-icons" style="font-size: 18px;">save</span></button>&nbsp;&nbsp;<button class="btn btn-info" onclick="openEditModal('` + anime.id + `')"><span class="material-icons" style="font-size: 18px;">create</span></button>&nbsp;&nbsp;<button class="btn btn-danger" onclick="openRemoveModal('`+ anime.id +`',` + indexCounter + `)"><span class="material-icons" style="font-size: 18px;">delete</span></button></div> </div> </div> </div></div>`;
     }
 
     return AnimeCardHtml;
@@ -438,41 +502,58 @@ function savingAnimeFile() {
 
 //Export list
 function exportAnimeFile() {
-    const exportLink = document.createElement("a");
-    exportLink.href = URL.createObjectURL(new Blob([JSON.stringify(myAnimes, null, 2)], {type: "application/json"}));
-    exportLink.setAttribute("download", "myWatchListData.json");
-    document.body.appendChild(exportLink);
-    exportLink.click();
-    document.body.removeChild(exportLink);
+    try{
+        const exportLink = document.createElement("a");
+        exportLink.href = URL.createObjectURL(new Blob([JSON.stringify(myAnimes, null, 2)], {type: "application/json"}));
+        exportLink.setAttribute("download", "myWatchListData.json");
+        document.body.appendChild(exportLink);
+        exportLink.click();
+        document.body.removeChild(exportLink);
 
-    console.log('Exporting your anime data!');
+        console.log('Exporting your anime data!');
+
+        alert(`We exported your last list successfully ;)`);
+    }catch(ex){
+        alert(`We coulnd't export your list :(\nError: `+ ex);
+    }
 }
 
 //Import list
 function importAnimeFile() {
 
-    let file = document.getElementById('importJsonFile').files[0];
+    try{
+        let file = document.getElementById('importJsonFile').files[0];
 
-    let testeanimes;
+        if(file){
 
-    let reader = new FileReader();
+            let reader = new FileReader();
 
-    reader.onload = function () { 
-        try {
-            myAnimes = JSON.parse(reader.result);
-            console.log('file: ', file ,'\nEspected: ', reader.result, '\n Var: ', myAnimes);
-            
-            savingAnimeFile();
-            showMyAnimes(myAnimes);
+            reader.onload = function () { 
+                try {
+                    myAnimes = JSON.parse(reader.result);
+                    console.log('file: ', file ,'\nEspected: ', reader.result, '\n Var: ', myAnimes);
+                    
+                    savingAnimeFile();
+                    showMyAnimes(myAnimes);
+                }
+                catch (ex) {
+                    alert('Exception: ', ex);
+                } 
+            };
+
+            reader.readAsText(file);
+            alert(`Your last list was imported successfully ;)`);
+            setTimeout(showContent('#home'), 2000);
+        }else{
+            alert(`Please select a file to import!`);
         }
-        catch (ex) {
-            alert('Exception: ', ex);
-        } 
-    };
 
-    reader.readAsText(file);
+        
+    }catch(ex){
+        alert(`We coulnd't import your last list :(\nError: `+ ex);
+    }
 
-    showContent('#home');
+
 
 }
 
