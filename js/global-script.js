@@ -4,7 +4,7 @@ let myAnimes = { animes: [] };
 
 if (localStorage.getItem('myAnimesJson')) {
     myAnimes = JSON.parse(localStorage.getItem('myAnimesJson'));
-    console.log(myAnimes);
+    //console.log(myAnimes);
 }
 
 
@@ -55,44 +55,75 @@ function showContent(contentID) {
 
 //Add new anime
 function addNewAnime() {
-    let newAnimeName = $('#newAnimeName').val();
-    let newAnimeUrl = $('#newAnimeUrl').val();
-    let newAnimeImgUrl = $('#newAnimeIMG').val();
-    let newAnimeTotalNumOfEps = $('#newAnimeTotalNumOfEps').val();
-    let newAnimeWatch = $('input[name="newAnimeWatch"]:checked').val();
-    let newAnimeActualEp = $('#newAnimeActualEp').val();
-    let newAnimeAlreadyWatched;
-    let newAnimeWatching;
+    if(!$('#newAnimeName').val()){
+        alert('Please enter the name!');
+        return false;
+    }else{
+        let newAnimeName = $('#newAnimeName').val();
+        let newAnimeUrl = $('#newAnimeUrl').val();
+        let newAnimeImgUrl = $('#newAnimeIMG').val();
+        let newAnimeWatch = $('input[name="newAnimeWatch"]:checked').val();
+        let newAnimeActualEp = $('#newAnimeActualEp').val();
+        let newAnimeTotalNumOfEps;
+        let newAnimeAlreadyWatched;
+        let newAnimeWatching;
 
-    let date = new Date();
-    let newMillis = date.getTime();
+        if($('#inputAddAnimeTotalNumEpsUndefined').is(':checked')){
+            newAnimeTotalNumOfEps = 'Undefined';
+        }else{
+            newAnimeTotalNumOfEps = $('#newAnimeTotalNumOfEps').val();
+        }
 
-    if (newAnimeWatch == 'watching') {
-        newAnimeAlreadyWatched = false;
-        newAnimeWatching = true;
-    } else {
-        newAnimeAlreadyWatched = true;
-        newAnimeWatching = false;
+        let date = new Date();
+        let newMillis = date.getTime();
+
+        if (newAnimeWatch == 'watching') {
+            newAnimeAlreadyWatched = false;
+            newAnimeWatching = true;
+        } else {
+            newAnimeAlreadyWatched = true;
+            newAnimeWatching = false;
+        }
+
+        let anime = {
+            id: newMillis.toString(),
+            name: newAnimeName,
+            url: newAnimeUrl,
+            imgUrl: newAnimeImgUrl,
+            totalNumEps: newAnimeTotalNumOfEps,
+            watching: newAnimeWatching,
+            actualEp: newAnimeActualEp,
+            watched: newAnimeAlreadyWatched
+        };
+
+        myAnimes.animes.push(anime);
+
+        //console.log('New anime added! ', newAnimeWatch);
+
+        savingAnimeFile();
+        showMyAnimes(myAnimes);
+        showContent('#home');
     }
+}
 
-    let anime = {
-        id: newMillis.toString(),
-        name: newAnimeName,
-        url: newAnimeUrl,
-        imgUrl: newAnimeImgUrl,
-        totalNumEps: newAnimeTotalNumOfEps,
-        watching: newAnimeWatching,
-        actualEp: newAnimeActualEp,
-        watched: newAnimeAlreadyWatched
-    };
-
-    myAnimes.animes.push(anime);
-
-    console.log('New anime added! ', newAnimeWatch);
-
-    savingAnimeFile();
-    showMyAnimes(myAnimes);
-    showContent('#home');
+function validationAdd(fieldName, fieldHelperName){
+    if(!$(fieldName).val()){
+        $(fieldName).removeClass('border border-success');
+        $(fieldName).addClass('border border-danger');
+        if($(fieldHelperName).hasClass('d-none')){
+            $(fieldHelperName).removeClass('d-none');
+        }
+        //console.log('nome n tem valor');
+        return false;
+    }else{
+        $(fieldName).removeClass('border border-danger');
+        $(fieldName).addClass('border border-success');
+        if(!$(fieldHelperName).hasClass('d-none')){
+            $(fieldHelperName).addClass('d-none');
+        }
+        //console.log('nome tem valor');
+        return true;
+    }
 }
 
 //Add new anime control validation
@@ -124,13 +155,13 @@ function saveAnimeEp(animeID) {
         myAnimes.animes[animeIndex].watched = true;
     }
 
-    console.log('Anime ' + animeID + ' edited! ');
+    //console.log('Anime ' + animeID + ' edited! ');
 
     savingAnimeFile();
     showMyAnimes(myAnimes);
 }
 
-//Edit anime
+//Edit anime modal
 function openEditModal(animeID){
 
     let animeIndex = myAnimes.animes.findIndex((obj => obj.id == animeID));
@@ -143,6 +174,30 @@ function openEditModal(animeID){
     $('#inputEditAnimeTotalNumEps').val(myAnimes.animes[animeIndex].totalNumEps);
     $('#inputEditAnimeActualEp').val(myAnimes.animes[animeIndex].actualEp);
 
+    if(myAnimes.animes[animeIndex].watched){
+        $( "#editAnimeAlreadyWatched" ).prop( "checked", true );
+        $( "#editAnimeWatching" ).prop( "checked", false );
+    }else{
+        $( "#editAnimeWatching" ).prop( "checked", true );
+        $( "#editAnimeAlreadyWatched" ).prop( "checked", false );
+    }
+
+    if(myAnimes.animes[animeIndex].totalNumEps === 'Undefined'){
+        $( "#inputEditAnimeTotalNumEpsUndefined" ).prop( "checked", true );
+        $('#inputEditAnimeTotalNumEps').hide();
+    }else{
+        $( "#inputEditAnimeTotalNumEpsUndefined" ).prop( "checked", false );
+        $('#inputEditAnimeTotalNumEps').show();
+    }
+
+    if($('#editAnimeWatching').is(':checked')){
+        $('#editAnimeActualEpGroup').removeClass('d-none');
+    }else{
+        if(!$('#editAnimeActualEp').hasClass('d-none')){
+            $('#editAnimeActualEpGroup').addClass('d-none');
+        }
+    }
+
     $('#editAnimeModal-footer').html(`<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button><button type="button" onclick="editAnime('` + animeIndex + `')" class="btn btn-primary">Save changes</button>`);
 
     $('#editAnimeModal').modal('show');
@@ -151,8 +206,8 @@ function openEditModal(animeID){
 //Edit anime
 function editAnime(animeIndex){
 
-    console.log('Actual Total Eps: ' + myAnimes.animes[animeIndex].totalNumEps);
-    console.log('New Actual Total Eps: ' + $("#inputEditAnimeTotalNumEps").val());
+    //console.log('Actual Total Eps: ' + myAnimes.animes[animeIndex].totalNumEps);
+    //console.log('New Actual Total Eps: ' + $("#inputEditAnimeTotalNumEps").val());
 
     if($(inputEditAnimeName).val()){
         myAnimes.animes[animeIndex].name = $("#inputEditAnimeName").val();
@@ -166,21 +221,76 @@ function editAnime(animeIndex){
         myAnimes.animes[animeIndex].url = $("#inputEditAnimeUrl").val();
     }
 
-    if($(inputEditAnimeTotalNumEps).val()){
-        myAnimes.animes[animeIndex].totalNumEps = $("#inputEditAnimeTotalNumEps").val();
+    if($('#inputEditAnimeTotalNumEpsUndefined').is(':checked')){
+        myAnimes.animes[animeIndex].totalNumEps = 'Undefined';
+    }else{
+        if($(inputEditAnimeTotalNumEps).val()){
+            myAnimes.animes[animeIndex].totalNumEps = $("#inputEditAnimeTotalNumEps").val();
+        }
     }
 
-    if($(inputEditAnimeActualEp).val()){
-        myAnimes.animes[animeIndex].actualEp = $("#inputEditAnimeActualEp").val();
+    if($('#editAnimeWatching').is(':checked')){
+        myAnimes.animes[animeIndex].watching = true;
+        myAnimes.animes[animeIndex].watched = false;
+        if($(inputEditAnimeActualEp).val()){
+            myAnimes.animes[animeIndex].actualEp = $("#inputEditAnimeActualEp").val();
+        }
+    }else{
+        if($('#editAnimeAlreadyWatched').is(':checked')){
+            myAnimes.animes[animeIndex].watching = false;
+            myAnimes.animes[animeIndex].watched = true;
+        }
     }
     
+    
 
-    console.log('Anime ' + animeIndex + ' edited! ');
+    
+    
+
+    //console.log('Anime ' + animeIndex + ' edited! ');
 
     savingAnimeFile();
     showMyAnimes(myAnimes);
 
+    $('#inputEditAnimeName').val('');
+    $('#inputEditAnimeImgUrl').val('');
+    $('#inputEditAnimeUrl').val('');
+    $('#inputEditAnimeTotalNumEps').val('');
+    $('#inputEditAnimeActualEp').val('');
+    $( "#inputEditAnimeTotalNumEpsUndefined" ).prop( "checked", false );
+
     $('#editAnimeModal').modal('hide');
+}
+
+
+//Add new anime control validation
+function validationEditNewAnimeRadios(){
+    if($('#editAnimeWatching').is(':checked')){
+        $('#editAnimeActualEpGroup').removeClass('d-none');
+    }else{
+        if(!$('#editAnimeActualEp').hasClass('d-none')){
+            $('#editAnimeActualEpGroup').addClass('d-none');
+        }
+    }
+}
+
+//validation edit Total undefined
+function validationUndefined(form){
+    if(form === 'add'){
+        if($('#inputAddAnimeTotalNumEpsUndefined').is(':checked')){
+            $('#newAnimeTotalNumOfEps').hide();
+        }else{
+            $('#newAnimeTotalNumOfEps').show();
+        }
+    }else if('edit'){
+        if($('#inputEditAnimeTotalNumEpsUndefined').is(':checked')){
+            $('#inputEditAnimeTotalNumEps').hide();
+        }else{
+            $('#inputEditAnimeTotalNumEps').show();
+        }
+    }else{
+
+    }
 }
 
 function openRemoveModal(animeID, indexCounter){
@@ -199,11 +309,11 @@ function removeAnime(indexCounter) {
 
     //myAnimes.animes.push(anime);
 
-    console.log('Anime ' + indexCounter + ' removed!');
+    //console.log('Anime ' + indexCounter + ' removed!');
 
     if (indexCounter !== undefined) myAnimes.animes.splice(indexCounter, 1);
 
-    //console.log("After removal:", myAnimes.animes);
+    ////console.log("After removal:", myAnimes.animes);
 
     savingAnimeFile();
     showMyAnimes(myAnimes);
@@ -264,7 +374,7 @@ const filters = {
 
             $.each(myAnimes.animes, function (key, val) {
                 if (val.name.search(expression) != -1) {
-                    //console.log('Anime name: ', anime);
+                    ////console.log('Anime name: ', anime);
                     //'<br>Watching: '+ anime.watching +'<br>Actual Episode: '+ anime.actualEp;
                     if (myAnimes.animes == null) {
                         return false;
@@ -296,7 +406,7 @@ const filters = {
 
             $.each(myAnimes.animes, function (key, val) {
                 if (val.watched) {
-                    //console.log('Anime name: ', anime);
+                    ////console.log('Anime name: ', anime);
                     //'<br>Watching: '+ anime.watching +'<br>Actual Episode: '+ anime.actualEp;
                     if (myAnimes.animes == null) {
                         return false;
@@ -317,7 +427,7 @@ const filters = {
 
             $.each(myAnimes.animes, function (key, val) {
                 if (val.watched && val.name.search(expression) != -1) {
-                    //console.log('Anime name: ', anime);
+                    ////console.log('Anime name: ', anime);
                     //'<br>Watching: '+ anime.watching +'<br>Actual Episode: '+ anime.actualEp;
                     if (myAnimes.animes == null) {
                         return false;
@@ -352,7 +462,7 @@ const filters = {
 
             $.each(myAnimes.animes, function (key, val) {
                 if (val.watching && !val.watched) {
-                    //console.log('Anime name: ', anime);
+                    ////console.log('Anime name: ', anime);
                     //'<br>Watching: '+ anime.watching +'<br>Actual Episode: '+ anime.actualEp;
                     if (myAnimes.animes == null) {
                         return false;
@@ -373,7 +483,7 @@ const filters = {
 
             $.each(myAnimes.animes, function (key, val) {
                 if (val.watching && !val.watched && val.name.search(expression) != -1) {
-                    //console.log('Anime name: ', anime);
+                    ////console.log('Anime name: ', anime);
                     //'<br>Watching: '+ anime.watching +'<br>Actual Episode: '+ anime.actualEp;
                     if (myAnimes.animes == null) {
                         return false;
@@ -432,10 +542,10 @@ function makeAnimeCard(anime, indexCounter){
 
     let AnimeCardHtml;
 
-    if (anime.imgUrl != undefined) {
-        AnimeCardHtml = `<div class="col-12 col-sm-6 col-lg-4"><div class="card mb-3"> <div class="row no-gutters"> <div class="col-md-4"> <div class="card-img" style="background-image: url('`+ anime.imgUrl +`');"></div></div><div class="col-md-8"> <div class="card-body"><h5>` + anime.name + `</h5><br>Total Episodes: ` + anime.totalNumEps;
+    if (anime.imgUrl) {
+        AnimeCardHtml = `<div class="col-12 col-lg-4"><div class="card mb-3"> <div class="row no-gutters"> <div class="col-4"> <div class="card-img" style="background-image: url('`+ anime.imgUrl +`');"></div></div><div class="col-8"> <div class="card-body"><h5>` + anime.name + `</h5><br>Total Episodes: ` + anime.totalNumEps;
     } else {
-        AnimeCardHtml = '<div class="card mb-3"> <div class="row no-gutters"><div class="col-md-12"> <div class="card-body">Name: ' + anime.name + '<br>Total Episodes: ' + anime.totalNumEps;
+        AnimeCardHtml = '<div class="col-12 col-lg-4"><div class="card mb-3"> <div class="row no-gutters"><div class="col-12"> <div class="card-body">Name: ' + anime.name + '<br>Total Episodes: ' + anime.totalNumEps;
     }
 
     if (anime.watching && !anime.watched) {
@@ -443,7 +553,7 @@ function makeAnimeCard(anime, indexCounter){
     }
 
     if (anime.watched) {
-        AnimeCardHtml += `<br>Watched!<br><br><button class="btn btn-danger" onclick="openRemoveModal('`+ anime.id +`',` + indexCounter + `)"><span class="material-icons" style="font-size: 18px;">delete</span></button></div> </div> </div> </div></div>`;
+        AnimeCardHtml += `<br>Watched!<br><br><button class="btn btn-danger" onclick="openRemoveModal('`+ anime.id +`',` + indexCounter + `)"><span class="material-icons" style="font-size: 18px;">delete</span></button>&nbsp;&nbsp;<button class="btn btn-info" onclick="openEditModal('` + anime.id + `')"><span class="material-icons" style="font-size: 18px;">create</span></button></div> </div> </div> </div></div>`;
     }else{
         AnimeCardHtml += `<br><br><a class="btn btn-info" href='`+ anime.url +`' target='_blank'><span class="material-icons" style="font-size: 18px;">launch</span></a>&nbsp;&nbsp;<button class="btn btn-primary" onclick="saveAnimeEp('` + anime.id + `')"><span class="material-icons" style="font-size: 18px;">save</span></button>&nbsp;&nbsp;<button class="btn btn-info" onclick="openEditModal('` + anime.id + `')"><span class="material-icons" style="font-size: 18px;">create</span></button>&nbsp;&nbsp;<button class="btn btn-danger" onclick="openRemoveModal('`+ anime.id +`',` + indexCounter + `)"><span class="material-icons" style="font-size: 18px;">delete</span></button></div> </div> </div> </div></div>`;
     }
@@ -493,11 +603,11 @@ function makeAnimeCard(anime, indexCounter){
 //Save archive on localStorage (Google Drive in future)
 function savingAnimeFile() {
     //saving on localstorage
-    //console.log(JSON.stringify(myAnimes));
+    ////console.log(JSON.stringify(myAnimes));
 
     localStorage.setItem('myAnimesJson', JSON.stringify(myAnimes));
 
-    console.log('Saving your anime data!');
+    //console.log('Saving your anime data!');
 }
 
 //Export list
@@ -510,7 +620,7 @@ function exportAnimeFile() {
         exportLink.click();
         document.body.removeChild(exportLink);
 
-        console.log('Exporting your anime data!');
+        //console.log('Exporting your anime data!');
 
         alert(`We exported your last list successfully ;)`);
     }catch(ex){
@@ -531,7 +641,7 @@ function importAnimeFile() {
             reader.onload = function () { 
                 try {
                     myAnimes = JSON.parse(reader.result);
-                    console.log('file: ', file ,'\nEspected: ', reader.result, '\n Var: ', myAnimes);
+                    //console.log('file: ', file ,'\nEspected: ', reader.result, '\n Var: ', myAnimes);
                     
                     savingAnimeFile();
                     showMyAnimes(myAnimes);
@@ -559,7 +669,7 @@ function importAnimeFile() {
 
 //Get archive from Google Drive
 function gettingAnimeFile() {
-    console.log('Getting your anime data!');
+    //console.log('Getting your anime data!');
 }
 
 //------------------------------------------- SAVING AND GETTING LIST DATA END --------------------------------------------
