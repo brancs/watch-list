@@ -548,13 +548,13 @@ function makeAnimeCard(anime, indexCounter){
     }
 
     if (anime.watching && !anime.watched) {
-        AnimeCardHtml += `<br>Last episode watched:<br> <button class="btn btn-danger" onclick="saveAnimeEp('` + anime.id + `', 'minus')"><span class="material-icons" style="font-size: 18px;">remove</span></button> &nbsp; <span>`+ anime.actualEp +`</span> &nbsp; <button class="btn btn-primary" onclick="saveAnimeEp('` + anime.id + `', 'plus')"><span class="material-icons" style="font-size: 18px;">add</span></button>`;
+        AnimeCardHtml += `<br>Last episode watched:<br> <button class="btn btn-secondary" style="padding: 1px 6px !important;" onclick="saveAnimeEp('` + anime.id + `', 'minus')"><span class="material-icons" style="font-size: 18px;">remove</span></button> &nbsp; <span>`+ anime.actualEp +`</span> &nbsp; <button class="btn btn-dark" style="padding: 1px 6px !important;" onclick="saveAnimeEp('` + anime.id + `', 'plus')"><span class="material-icons" style="font-size: 18px;">add</span></button>`;
     }
 
     if (anime.watched) {
         AnimeCardHtml += `<br><h5>Watched!</h5><br><button class="btn btn-danger" onclick="openRemoveModal('`+ anime.id +`',` + indexCounter + `)"><span class="material-icons" style="font-size: 18px;">delete</span></button>&nbsp;&nbsp;<button class="btn btn-info" onclick="openEditModal('` + anime.id + `')"><span class="material-icons" style="font-size: 18px;">create</span></button></div> </div> </div> </div></div>`;
     }else{
-        AnimeCardHtml += `<br><br><a class="btn btn-warning" href='`+ anime.url +`' target='_blank'><span class="material-icons" style="font-size: 18px;">launch</span></a>&nbsp;&nbsp;<button class="btn btn-info" onclick="openEditModal('` + anime.id + `')"><span class="material-icons" style="font-size: 18px;">create</span></button>&nbsp;&nbsp;<button class="btn btn-danger" onclick="openRemoveModal('`+ anime.id +`',` + indexCounter + `)"><span class="material-icons" style="font-size: 18px;">delete</span></button></div> </div> </div> </div></div>`;
+        AnimeCardHtml += `<br><br><a class="btn btn-primary" href='`+ anime.url +`' target='_blank'><span class="material-icons" style="font-size: 18px;">launch</span></a>&nbsp;&nbsp;<button class="btn btn-info" onclick="openEditModal('` + anime.id + `')"><span class="material-icons" style="font-size: 18px;">create</span></button>&nbsp;&nbsp;<button class="btn btn-danger" onclick="openRemoveModal('`+ anime.id +`',` + indexCounter + `)"><span class="material-icons" style="font-size: 18px;">delete</span></button></div> </div> </div> </div></div>`;
     }
 
     return AnimeCardHtml;
