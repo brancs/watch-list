@@ -1,4 +1,3 @@
-const sectionsIDs = ['#home', '#addNewAnime', '#importExportList'];
 
 let myAnimes = { animes: [] };
 
@@ -12,42 +11,30 @@ function init() {
     //hide clear search button 
     $('#btn-clear-search').hide();
 
+    let onlyShow = myAnimes;
+
+    onlyShow.animes.sort(function(a, b) {
+        var animeNameA = a.name.toLowerCase(), animeNameB = b.name.toLowerCase();
+
+        console.log(animeNameA, animeNameB);
+
+        if (animeNameA < animeNameB){
+            return -1;
+        }
+
+        if (animeNameA > animeNameB){
+            return 1;
+        }
+        
+        return 0;
+
+    });
+
     //get and show animes
-    showMyAnimes(myAnimes);
+    showMyAnimes(onlyShow);
+    console.log('ONLY SHOW');
 
-    //Hide all content when init
-    for (let contentIndex = 1; contentIndex <= sectionsIDs.length - 1; contentIndex++) {
-        $(sectionsIDs[contentIndex]).hide();
-    }
 }
-
-//------------------------------------------- PAGE CONTENTS CONTROLER START --------------------------------------------
-
-//Show selected content
-function showContent(contentID) {
-    $('.content').hide();
-    $(contentID).show();
-
-    if (contentID == '#home') {
-        $('#nav-import').removeClass('active');
-        $('#nav-add').removeClass('active');
-        $('#nav-home').addClass('active');
-    } else if (contentID == '#addNewAnime') {
-        $('#nav-home').removeClass('active');
-        $('#nav-import').removeClass('active');
-        $('#nav-add').addClass('active');
-    }else if (contentID == '#importExportList') {
-        $('#nav-home').removeClass('active');
-        $('#nav-add').removeClass('active');
-        $('#nav-import').addClass('active');
-    } else {
-        $('#nav-home').removeClass('active');
-        $('#nav-add').removeClass('active');
-        $('#nav-import').remmoveClass('active');
-    }
-}
-
-//------------------------------------------- PAGE CONTENTS CONTROLER END --------------------------------------------
 
 
 
@@ -100,9 +87,9 @@ function addNewAnime() {
 
         //console.log('New anime added! ', newAnimeWatch);
 
+
         savingAnimeFile();
-        showMyAnimes(myAnimes);
-        showContent('#home');
+
     }
 }
 
@@ -138,27 +125,39 @@ function validationAddNewAnimeRadios(){
 }
 
 //Save actual ep anime
-function saveAnimeEp(animeID) {
+function saveAnimeEp(animeID, op) {
 
     //myAnimes.animes.push(anime);
 
     let animeIndex = myAnimes.animes.findIndex((obj => obj.id == animeID));
 
-    let inputEpId= '#newEpValueTo-'+ animeID;
+    if(op == 'plus'){
 
-    //let novoEp = $(inputEpId).val();
-    if($(inputEpId).val()){
-        myAnimes.animes[animeIndex].actualEp = $(inputEpId).val();
-    }
+        myAnimes.animes[animeIndex].actualEp++;
 
-    if(myAnimes.animes[animeIndex].actualEp == myAnimes.animes[animeIndex].totalNumEps){
-        myAnimes.animes[animeIndex].watched = true;
+        if(myAnimes.animes[animeIndex].actualEp == myAnimes.animes[animeIndex].totalNumEps){
+            myAnimes.animes[animeIndex].watched = true;
+        }
+
+    }else if(op == 'minus'){
+
+        myAnimes.animes[animeIndex].actualEp--;
+
+        if(myAnimes.animes[animeIndex].actualEp < 0){
+            myAnimes.animes[animeIndex].actualEp = 0;
+        }
+
+        if(myAnimes.animes[animeIndex].actualEp == myAnimes.animes[animeIndex].totalNumEps){
+            myAnimes.animes[animeIndex].watched = true;
+        }
+
     }
 
     //console.log('Anime ' + animeID + ' edited! ');
 
     savingAnimeFile();
     showMyAnimes(myAnimes);
+
 }
 
 //Edit anime modal
@@ -515,14 +514,14 @@ const filters = {
 
 //Show your watch list
 
-function showMyAnimes(myAnimes) {
+function showMyAnimes(onlyShow) {
     $('#myAnimes').empty();
     $('#animeSpinner').removeClass('d-none');
     let indexCounter = 0;
-    if (myAnimes.animes == null) {
+    if (onlyShow.animes == null) {
         return false;
     } else {
-        for (anime of myAnimes.animes) {
+        for (anime of onlyShow.animes) {
 
             $('#myAnimes').append(makeAnimeCard(anime, indexCounter));
 
@@ -543,19 +542,19 @@ function makeAnimeCard(anime, indexCounter){
     let AnimeCardHtml;
 
     if (anime.imgUrl) {
-        AnimeCardHtml = `<div class="col-12 col-lg-4"><div class="card mb-3"> <div class="row no-gutters"> <div class="col-4"> <div class="card-img" style="background-image: url('`+ anime.imgUrl +`');"></div></div><div class="col-8"> <div class="card-body"><h5>` + anime.name + `</h5><br>Total Episodes: ` + anime.totalNumEps;
+        AnimeCardHtml = `<div class="col-12 col-lg-4"><div class="card mb-3"> <div class="row card-mins-height no-gutters"> <div class="col-4"> <div class="card-img" style="background-image: url('`+ anime.imgUrl +`');"></div></div><div class="col-8"> <div class="card-body"><h5 class="mb-0 text-truncate">` + anime.name + `</h5><br>Total Episodes: ` + anime.totalNumEps + `<br>`;
     } else {
-        AnimeCardHtml = '<div class="col-12 col-lg-4"><div class="card mb-3"> <div class="row no-gutters"><div class="col-12"> <div class="card-body">Name: ' + anime.name + '<br>Total Episodes: ' + anime.totalNumEps;
+        AnimeCardHtml = '<div class="col-12 col-lg-4"><div class="card mb-3"> <div class="row card-mins-height no-gutters"><div class="col-12"> <div class="card-body"> <h5 class="mb-0 text-truncate">' + anime.name + '</h5>Total Episodes: ' + anime.totalNumEps;
     }
 
     if (anime.watching && !anime.watched) {
-        AnimeCardHtml += '<br>Last episode watched: <input id="newEpValueTo-'+ anime.id +'" type="number" style="width: 65px;" placeholder="' + anime.actualEp + '">';
+        AnimeCardHtml += `<br>Last episode watched:<br> <button class="btn btn-danger" onclick="saveAnimeEp('` + anime.id + `', 'minus')"><span class="material-icons" style="font-size: 18px;">remove</span></button> &nbsp; <span>`+ anime.actualEp +`</span> &nbsp; <button class="btn btn-primary" onclick="saveAnimeEp('` + anime.id + `', 'plus')"><span class="material-icons" style="font-size: 18px;">add</span></button>`;
     }
 
     if (anime.watched) {
-        AnimeCardHtml += `<br>Watched!<br><br><button class="btn btn-danger" onclick="openRemoveModal('`+ anime.id +`',` + indexCounter + `)"><span class="material-icons" style="font-size: 18px;">delete</span></button>&nbsp;&nbsp;<button class="btn btn-info" onclick="openEditModal('` + anime.id + `')"><span class="material-icons" style="font-size: 18px;">create</span></button></div> </div> </div> </div></div>`;
+        AnimeCardHtml += `<br><h5>Watched!</h5><br><button class="btn btn-danger" onclick="openRemoveModal('`+ anime.id +`',` + indexCounter + `)"><span class="material-icons" style="font-size: 18px;">delete</span></button>&nbsp;&nbsp;<button class="btn btn-info" onclick="openEditModal('` + anime.id + `')"><span class="material-icons" style="font-size: 18px;">create</span></button></div> </div> </div> </div></div>`;
     }else{
-        AnimeCardHtml += `<br><br><a class="btn btn-info" href='`+ anime.url +`' target='_blank'><span class="material-icons" style="font-size: 18px;">launch</span></a>&nbsp;&nbsp;<button class="btn btn-primary" onclick="saveAnimeEp('` + anime.id + `')"><span class="material-icons" style="font-size: 18px;">save</span></button>&nbsp;&nbsp;<button class="btn btn-info" onclick="openEditModal('` + anime.id + `')"><span class="material-icons" style="font-size: 18px;">create</span></button>&nbsp;&nbsp;<button class="btn btn-danger" onclick="openRemoveModal('`+ anime.id +`',` + indexCounter + `)"><span class="material-icons" style="font-size: 18px;">delete</span></button></div> </div> </div> </div></div>`;
+        AnimeCardHtml += `<br><br><a class="btn btn-warning" href='`+ anime.url +`' target='_blank'><span class="material-icons" style="font-size: 18px;">launch</span></a>&nbsp;&nbsp;<button class="btn btn-info" onclick="openEditModal('` + anime.id + `')"><span class="material-icons" style="font-size: 18px;">create</span></button>&nbsp;&nbsp;<button class="btn btn-danger" onclick="openRemoveModal('`+ anime.id +`',` + indexCounter + `)"><span class="material-icons" style="font-size: 18px;">delete</span></button></div> </div> </div> </div></div>`;
     }
 
     return AnimeCardHtml;
@@ -653,7 +652,6 @@ function importAnimeFile() {
 
             reader.readAsText(file);
             alert(`Your last list was imported successfully ;)`);
-            setTimeout(showContent('#home'), 2000);
         }else{
             alert(`Please select a file to import!`);
         }

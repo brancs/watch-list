@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch List</title>
+    <link rel="icon" type="image/png" href="assets/images/favicon.ico">
+
+    <!-- CSS Bootstrap only -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- My CSS -->
+    <link rel="stylesheet" href="../css/global-main.css">
+</head>
+<body>
+   
+    <section id="header" class="menu">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="#"><span class="material-icons" style="font-size: 16px;">view_list</span> My Watch List</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li id="nav-home" class="nav-item">
+                        <a class="nav-link" href="/index.html">Home</a>
+                    </li>
+                    <li id="nav-add" class="nav-item">
+                        <a class="nav-link" href="/pages/add.html">Add to List</a>
+                    </li>
+                    <li id="nav-import" class="nav-item">
+                        <a class="nav-link" href="/pages/import-export.html">Import/Export List</a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav navbar-right">
+                    <li id="nav-import" class="nav-item float-lg-right active">
+                        <a class="nav-link" href="/pages/patch-note.html">Patch Notes <span class="material-icons" style="vertical-align: -6px;">info</span><span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>
+            </div>
+          </nav>
+    </section>
+
+    <section id="patch-note">
+        <div class="container-fluid">
+            <div class="row mt-5 mb-5">
+                <div class="col-12">
+                    <div class="container-fluid">
+                        <div class="row">
+
+                            <div class="col-12 mb-5">    
+                                <h2><span class="material-icons">info</span> Last patch v1.0.2 - 12/5/2020</h2>
+                            </div>
+
+                            <!-- patch 1.0.2 -->
+                            <div class="col-12 mb-3">
+                                <h4>v1.0.2 - 12/5/2020</h4>
+                                <p>
+                                    Added the features: now list is in alphabetic order, added patch notes and better last episode set system;
+                                </p>
+                            </div>
+
+                            <!-- patch 1.0.1 -->
+                            <div class="col-12 mb-3">
+                                <h4>v1.0.1 - 10/14/2020</h4>
+                                <p>
+                                    Added the features: import and export list, new favicon, edit item and minors bugs fixed.
+                                </p>
+                            </div>
+
+                            <!-- patch 1.0.0 -->
+                            <div class="col-12">
+                                <h4>v1.0.0 - 10/10/2020</h4>
+                                <p>
+                                    The base code was uploaded to github with the features: add itens, remove itens and set item episode.
+                                </p>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer style="position: absolute; bottom: 0; width: 100%;">
+        <div class="container">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p>© 2020-2021 Website made by Vitor Brancalião · <a href="https://github.com/brancs" target="_blank">GitHub</a> · <a href="https://www.instagram.com/_brancs/" target="_blank">Instagram</a></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</body>
+
+
+</html>

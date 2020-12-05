@@ -17,6 +17,10 @@
     font-size: 22px;
 }
 
+.card-mins-height{
+    min-height: 270px;
+}
+
 .card-img{
     width: 100%;
     height: 100%;

@@ -25,20 +25,25 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
                     <li id="nav-home" class="nav-item active">
-                        <a class="nav-link" href="javascript:void(0)" onclick="showContent('#home')">Home <span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li id="nav-add" class="nav-item">
-                        <a class="nav-link" href="javascript:void(0)" onclick="showContent('#addNewAnime')">Add to List</a>
+                        <a class="nav-link" href="/pages/add.html">Add to List</a>
                     </li>
                     <li id="nav-import" class="nav-item">
-                        <a class="nav-link" href="javascript:void(0)" onclick="showContent('#importExportList')">Import/Export List Backup</a>
+                        <a class="nav-link" href="/pages/import-export.html">Import/Export List</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav navbar-right">
+                    <li id="nav-import" class="nav-item float-lg-right">
+                        <a class="nav-link" href="/pages/patch-note.html">Patch Notes <span class="material-icons" style="vertical-align: -6px;">info</span></a>
                     </li>
                 </ul>
             </div>
           </nav>
     </section>
 
-    <section id="home" class="content">
+    <section id="home">
         <div class="container-fluid">
             <div class="row mt-5 mb-5">
                 <div class="col-12">
@@ -106,104 +111,6 @@
                             </div>
                             -->
                             <!-- End home -->
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="addNewAnime" class="content">
-        <div class="container-fluid">
-            <div class="row mt-5 mb-5">
-                <div class="col-12">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-12 mb-3">    
-                                <h2><span class="material-icons">playlist_add</span> Add to your watch list</h2>
-                            </div>
-
-                            <!-- Start add anime -->
-                            <div class="col-12 col-md-5 col-lg-3">
-                                <form id="addNewAnime">
-                                    <div class="form-group">
-                                        <label for="newAnimeName"><p class="m-0"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">font_download</span> Name</p></label>
-                                        <input type="text" class="form-control" id="newAnimeName" onblur="validationAdd('#newAnimeName', '#newAnimeNameHelp')">
-                                        <small id="newAnimeNameHelp" class="form-text text-muted d-none">You need to give it a name!</small>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label for="newAnimeUrl"><p class="m-0"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">launch</span> Url</p></label>
-                                        <input type="text" class="form-control" id="newAnimeUrl">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="newAnimeIMG"><p class="m-0"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">insert_photo</span> Image Url</p></label>
-                                        <input type="text" class="form-control" id="newAnimeIMG">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="newAnimeTotalNumOfEps"><p class="m-0"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">play_circle_filled</span> Total episodes</p></label>
-                                        <div class="form-check">
-                                            <input type="checkbox" class="form-check-input" id="inputAddAnimeTotalNumEpsUndefined" onchange="validationUndefined('add')">
-                                            <label class="form-check-label" for="inputAddAnimeTotalNumEpsUndefined"> Undefined</label>
-                                        </div>
-                                        <input type="number" class="form-control" id="newAnimeTotalNumOfEps" value="24">
-                                    </div>
-                                    <div class="form-group form-check">
-                                        <input type="radio" onchange="validationAddNewAnimeRadios()" class="form-check-input" style="position: relative;" name="newAnimeWatch" id="newAnimeWatching" value="watching" checked>
-                                        <label class="form-check-label click-able" for="newAnimeWatching"><p class="m-0"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">visibility</span> Watching</p></label>
-                                    </div>
-                                    <div class="form-group form-check">
-                                        <input type="radio" onchange="validationAddNewAnimeRadios()" class="form-check-input" style="position: relative;" name="newAnimeWatch" value="watched" id="newAnimeAlreadyWatched">
-                                        <label class="form-check-label click-able" for="newAnimeAlreadyWatched"><p class="m-0"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">visibility_off</span> Watched</p></label>
-                                    </div>
-                                    <div id="newAnimeActualEpGroup" class="form-group">
-                                        <label for="newAnimeActualEp"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">play_circle_filled</span> Actual Episode</label>
-                                        <input type="number" class="form-control" id="newAnimeActualEp" value="1">
-                                    </div>
-                                    <button type="button" onclick="addNewAnime()" class="btn btn-primary">Add to List</button>
-                                </form>
-                            </div>
-                            <!-- End add anime -->
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="importExportList" class="content">
-        <div class="container-fluid">
-            <div class="row mt-5 mb-5">
-                <div class="col-12">
-                    <div class="container-fluid">
-                        <div class="row">
-
-                            <div class="col-12 mb-3">    
-                                <h2><span class="material-icons">attach_file</span> Import and Export Backup List</h2>
-                            </div>
-
-                            <!-- Start Export anime -->
-                            <div class="col-12 mb-3">
-                                <h4>Export List</h4>
-                                <a class="btn btn-primary" onclick="exportAnimeFile()" href="javascript:void(0)">Export Watch List</a>
-                                <br>
-                                <span id="export-message"></span>
-                            </div>
-                            <!-- End Export anime -->
-
-                            <!-- Start Import anime -->
-                            <div class="col-12">
-                                <h4>Import List</h4>
-                                <div class="form-group">
-                                    <input type="file" class="form-control-file" id="importJsonFile">
-                                </div>
-                                <button class="btn btn-primary" onclick="importAnimeFile()">Import Watch List</button>
-                                <br>
-                                <span id="import-message"></span>
-                            </div>
-                            <!-- End Import anime -->
 
                         </div>
                     </div>

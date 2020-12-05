@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch List</title>
+    <link rel="icon" type="image/png" href="assets/images/favicon.ico">
+
+    <!-- CSS Bootstrap only -->
+    <link type="text/css"  rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <!-- Google Fonts -->
+    <link type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- My CSS -->
+    <link rel="stylesheet" href="../css/global-main.css">
+</head>
+<body>
+   
+    <section id="header" class="menu">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+            <a class="navbar-brand" href="#"><span class="material-icons" style="font-size: 16px;">view_list</span> My Watch List</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+          
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li id="nav-home" class="nav-item">
+                        <a class="nav-link" href="/index.html">Home</a>
+                    </li>
+                    <li id="nav-add" class="nav-item active">
+                        <a class="nav-link" href="/pages/add.html">Add to List <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li id="nav-import" class="nav-item">
+                        <a class="nav-link" href="/pages/import-export.html">Import/Export List</a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav navbar-right">
+                    <li id="nav-import" class="nav-item float-lg-right">
+                        <a class="nav-link" href="/pages/patch-note.html">Patch Notes <span class="material-icons" style="vertical-align: -6px;">info</span></a>
+                    </li>
+                </ul>
+            </div>
+          </nav>
+    </section>
+
+    <section id="addNewAnime">
+        <div class="container-fluid">
+            <div class="row mt-5 mb-5">
+                <div class="col-12">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12 mb-3">    
+                                <h2><span class="material-icons">playlist_add</span> Add to your watch list</h2>
+                            </div>
+
+                            <!-- Start add anime -->
+                            <div class="col-12">
+                                <form id="addNewAnime">
+                                    <div class="form-group">
+                                        <label for="newAnimeName"><p class="m-0"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">font_download</span> Name</p></label>
+                                        <input type="text" class="form-control" id="newAnimeName" onblur="validationAdd('#newAnimeName', '#newAnimeNameHelp')">
+                                        <small id="newAnimeNameHelp" class="form-text text-muted d-none">You need to give it a name!</small>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="newAnimeUrl"><p class="m-0"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">launch</span> Url</p></label>
+                                        <input type="text" class="form-control" id="newAnimeUrl">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newAnimeIMG"><p class="m-0"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">insert_photo</span> Image Url</p></label>
+                                        <input type="text" class="form-control" id="newAnimeIMG">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="newAnimeTotalNumOfEps"><p class="m-0"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">play_circle_filled</span> Total episodes</p></label>
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="inputAddAnimeTotalNumEpsUndefined" onchange="validationUndefined('add')">
+                                            <label class="form-check-label" for="inputAddAnimeTotalNumEpsUndefined"> Undefined</label>
+                                        </div>
+                                        <input type="number" class="form-control" id="newAnimeTotalNumOfEps" value="24">
+                                    </div>
+                                    <div class="form-group form-check">
+                                        <input type="radio" onchange="validationAddNewAnimeRadios()" class="form-check-input" style="position: relative;" name="newAnimeWatch" id="newAnimeWatching" value="watching" checked>
+                                        <label class="form-check-label click-able" for="newAnimeWatching"><p class="m-0"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">visibility</span> Watching</p></label>
+                                    </div>
+                                    <div class="form-group form-check">
+                                        <input type="radio" onchange="validationAddNewAnimeRadios()" class="form-check-input" style="position: relative;" name="newAnimeWatch" value="watched" id="newAnimeAlreadyWatched">
+                                        <label class="form-check-label click-able" for="newAnimeAlreadyWatched"><p class="m-0"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">visibility_off</span> Watched</p></label>
+                                    </div>
+                                    <div id="newAnimeActualEpGroup" class="form-group">
+                                        <label for="newAnimeActualEp"><span class="material-icons" style="vertical-align: bottom; font-size: 17px;">play_circle_filled</span> Actual Episode</label>
+                                        <input type="number" class="form-control" id="newAnimeActualEp" value="1">
+                                    </div>
+                                    <button type="button" onclick="addNewAnime()" class="btn btn-primary">Add to List</button>
+                                </form>
+                            </div>
+                            <!-- End add anime -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+    <!-- My JS -->
+    <script src="/js/global-script.js"></script>
+</body>
+
+
+</html>
